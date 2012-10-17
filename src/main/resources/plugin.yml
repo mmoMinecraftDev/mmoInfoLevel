@@ -1,0 +1,12 @@
+name: mmoInfoLevel
+version: ${releaseVersion}.${buildNumber}
+description: Adds a {level} token to the mmoInfo token list.
+author: mmoMinecraftDev
+website: http://mmo.me.uk
+main: mmo.Info.mmoInfoLevel
+depend: [Spout,mmoCore,mmoInfo]
+description: Adds {level} to the info tokens
+permissions:
+  mmo.info.level:
+    description: Allows {level} to show the current players vanilla level
+    default: true
