@@ -18,6 +18,7 @@ package mmo.Info;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import mmo.Core.InfoAPI.MMOInfoEvent;
 import mmo.Core.MMOPlugin;
@@ -53,11 +54,11 @@ import org.getspout.spoutapi.gui.Widget;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public final class mmoInfoLevel extends MMOPlugin implements Listener {
-	
+
 	private static final Map<Player, Widget> xplevelbar = new HashMap<Player, Widget>();
-	private static String config_displayas = "bar";
-	private boolean forceUpdate = true;
+	private static String config_displayas = "bar";	
 	private static final Color greenBar = new Color(0.0980f,0.4823f,0.1882f,1f);
+	private static final Map<UUID, Boolean> updateStatuses = new HashMap<UUID, Boolean>();
 
 	@Override
 	public EnumBitSet mmoSupport(final EnumBitSet support) {		
@@ -69,13 +70,13 @@ public final class mmoInfoLevel extends MMOPlugin implements Listener {
 	public void loadConfiguration(final FileConfiguration cfg) {
 		config_displayas = cfg.getString("displayas", config_displayas);		
 	}
-	
+
 	@Override
 	public void onEnable() {
 		super.onEnable();
 		this.pm.registerEvents(this, this);
 	}
-		
+
 	@EventHandler
 	public void onMMOInfo(MMOInfoEvent event)
 	{
@@ -87,27 +88,30 @@ public final class mmoInfoLevel extends MMOPlugin implements Listener {
 					xplevelbar.put(player, widget);
 					event.setWidget(plugin, widget);
 					event.setIcon("xp.png");
-					forceUpdate = true;
+					updateStatuses.put(player.getUniqueId(), true);	
 				} else { 
-				CustomLabel label = (CustomLabel)new CustomLabel().setResize(true).setFixed(true);				
-				xplevelbar.put(player, label);
-				event.setWidget(this.plugin, label);
-				event.setIcon("level.png");
+					CustomLabel label = (CustomLabel)new CustomLabel().setResize(true).setFixed(true);				
+					xplevelbar.put(player, label);
+					event.setWidget(this.plugin, label);
+					event.setIcon("level.png");
+					updateStatuses.put(player.getUniqueId(), true);	
 				}
-							
+
 			}
 		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onExpChange(PlayerExpChangeEvent event) {			
-		forceUpdate = true;						
+		updateStatuses.put(event.getPlayer().getUniqueId(), true);							
 	}
-	
+
 	public class CustomLabel extends GenericLabel {		
 		public void onTick() {
-			if (forceUpdate) {				
-				setText(String.format("Lvl. " + getScreen().getPlayer().getLevel()));						
+			final boolean update = updateStatuses.containsKey(getScreen().getPlayer().getUniqueId()) ? updateStatuses.get(getScreen().getPlayer().getUniqueId()) : false;
+			if (update) {				
+				setText(String.format("Lvl. " + getScreen().getPlayer().getLevel()));
+				updateStatuses.put(getScreen().getPlayer().getUniqueId(), false);
 			}
 		}
 	}
@@ -117,7 +121,7 @@ public final class mmoInfoLevel extends MMOPlugin implements Listener {
 		private final Texture bar = new GenericTexture();
 		private final Label level = new GenericLabel();
 		private transient int tick = 0;
-		
+
 		public CustomWidget() {
 			super();
 			slider.setMargin(1).setPriority(RenderPriority.Normal).setHeight(5).shiftXPos(1).shiftYPos(2);
@@ -128,11 +132,12 @@ public final class mmoInfoLevel extends MMOPlugin implements Listener {
 		}
 
 		public void onTick() {			
-			if (forceUpdate) {	
+			final boolean update = updateStatuses.containsKey(getScreen().getPlayer().getUniqueId()) ? updateStatuses.get(getScreen().getPlayer().getUniqueId()) : false;
+			if (update) {	
 				final int currentExp = Math.max(0, Math.min( 100, (int) (getScreen().getPlayer().getExp()*100)));			
 				slider.setColor(greenBar).setWidth(currentExp); 	
 				level.setText("" + getScreen().getPlayer().getLevel()).setScale(0.8f);
-				forceUpdate = false;
+				updateStatuses.put(getScreen().getPlayer().getUniqueId(), false);
 			}			
 		}
 	}
