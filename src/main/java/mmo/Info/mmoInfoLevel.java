@@ -126,8 +126,8 @@ public final class mmoInfoLevel extends MMOPlugin implements Listener {
 			super();
 			slider.setMargin(1).setPriority(RenderPriority.Normal).setHeight(5).shiftXPos(1).shiftYPos(2);
 			bar.setUrl("bar10.png").setPriority(RenderPriority.Lowest).setHeight(7).setWidth(103).shiftYPos(1);
-			level.setHeight(5).shiftXPos(110);			
-			this.setLayout(ContainerType.OVERLAY).setMinWidth(103).setMaxWidth(103).setWidth(103);
+			level.setScale(0.8F).setHeight(5).shiftXPos(105).shiftYPos(1);			
+			this.setLayout(ContainerType.OVERLAY).setMinWidth(120).setMaxWidth(120).setWidth(120);
 			this.addChildren(slider, level, bar);
 		}
 
@@ -136,7 +136,7 @@ public final class mmoInfoLevel extends MMOPlugin implements Listener {
 			if (update) {	
 				final int currentExp = Math.max(0, Math.min( 100, (int) (getScreen().getPlayer().getExp()*100)));			
 				slider.setColor(greenBar).setWidth(currentExp); 	
-				level.setText("" + getScreen().getPlayer().getLevel()).setScale(0.8f);
+				level.setText("" + getScreen().getPlayer().getLevel());
 				updateStatuses.put(getScreen().getPlayer().getUniqueId(), false);
 			}			
 		}
