@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -104,6 +105,11 @@ public final class mmoInfoLevel extends MMOPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onExpChange(PlayerExpChangeEvent event) {			
 		updateStatuses.put(event.getPlayer().getUniqueId(), true);							
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEnchantItemEvent(EnchantItemEvent event) {		
+		updateStatuses.put(event.getEnchanter().getUniqueId(), true);							
 	}
 
 	public class CustomLabel extends GenericLabel {		
