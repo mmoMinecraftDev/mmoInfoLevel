@@ -34,6 +34,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.PluginManager;
@@ -104,6 +105,11 @@ public final class mmoInfoLevel extends MMOPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onExpChange(PlayerExpChangeEvent event) {			
+		updateStatuses.put(event.getPlayer().getUniqueId(), true);							
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onLevelChange(PlayerLevelChangeEvent event) {			
 		updateStatuses.put(event.getPlayer().getUniqueId(), true);							
 	}
 	
